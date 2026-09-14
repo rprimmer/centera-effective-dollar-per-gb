@@ -1,0 +1,118 @@
+\section{Notation}\label{notation-1}
+\begingroup
+\setlength{\parskip}{3pt}
+
+\textbf{G}\textsubscript{\textbf{R}}\textbf{ } := GB of \emph{raw} capacity
+
+\textbf{G}\textsubscript{\textbf{A}}\textbf{ } := GB of \emph{available} capacity
+
+\textbf{G}\textsubscript{\textbf{U}} := GB of potentially usable capacity under the protection-only approximation
+
+\textbf{C}\textsubscript{\textbf{R}} := Material cost of \emph{raw} capacity, expressed as \$:G\textsubscript{R}
+
+\textbf{C}\textsubscript{\textbf{U}} := Cost with field uplift per actually usable GB
+
+\textbf{D} = \{D\textsubscript{0}, D\textsubscript{1}, D\textsubscript{2}\} -- HDD types contained in Nodes
+
+\begin{quote}
+\textbf{D}\textsubscript{\textbf{0}} := 320GB HDD (Gen 4 HDD)
+
+\textbf{D}\textsubscript{\textbf{1}} := 500GB HDD (Gen 4\textsuperscript{\ensuremath{\prime}} HDD)
+
+\textbf{D}\textsubscript{\textbf{2}} := 500GB HDD (Gen 5 HDD)
+\end{quote}
+
+\textbf{N} = \{N\textsubscript{0}, N\textsubscript{1}, N\textsubscript{2}\} -- Node types, represented by tuples of their installed disks
+
+\begin{quote}
+\textbf{N}\textsubscript{\textbf{0}} = (D\textsubscript{0}, D\textsubscript{0}, D\textsubscript{0}, D\textsubscript{0}) (Gen 4 node)
+
+\textbf{N}\textsubscript{\textbf{1}} = (D\textsubscript{1}, D\textsubscript{1}, D\textsubscript{1}, D\textsubscript{1}) (Gen 4\textsuperscript{\ensuremath{\prime}} node)
+
+\textbf{N}\textsubscript{\textbf{2}} = (D\textsubscript{2}, D\textsubscript{2}, D\textsubscript{2}, D\textsubscript{2}, D\textsubscript{2}, D\textsubscript{2}) (Gen 5 node)
+\end{quote}
+
+\textbf{H} = \{H\textsubscript{0}, H\textsubscript{1}, H\textsubscript{2}, H\textsubscript{3}\} -- Fixed overhead, expressed in GB
+
+\begin{quote}
+\textbf{H}\textsubscript{\textbf{0}} := Regeneration buffer (``regen buffer'' in the CLI)
+
+\textbf{H}\textsubscript{\textbf{1}} := Database overhead (``system buffer'' in the CLI)
+
+\textbf{H}\textsubscript{\textbf{2}}\textbf{ }:= FilePool + Platform (Linux + Filesystem) overhead (``system resources'' in CLI)
+
+\textbf{H}\textsubscript{\textbf{3}} := Audit and metadata overhead
+\end{quote}
+
+\textbf{L} := ``Cluster object'' count limit, anticipated to be 25M:HDD in Hapkin
+
+\textbf{Z} := Number of HDD in the modeled cluster or homogeneous partition
+
+\textbf{P} = \{P\textsubscript{cpm}, P\textsubscript{cpp}\} Data protection scheme, over the interval (0,1{]}, where P\textsubscript{cpm} := CPM and P\textsubscript{cpp} := CPP. Generally, \emph{P}\textsubscript{\emph{x}} = \emph{m} / (\emph{m} + \emph{n}), where there are \emph{m} data fragments and \emph{n} protection fragments.
+
+\textbf{R} := Titan rack material cost + miscellaneous minor components (cables, etc.), in US\$
+
+\textbf{W } := G4 Switch material cost (i.e. 2 switches) + 2 PDP + 2 PDU + cables, etc. per cube
+
+\textbf{T} := Total Solution Cost, expressed in US\$
+
+\textbf{A} := ASP per actually usable GB
+
+\(\boldsymbol{j_i}\) := Number of physical nodes of type \(i\)
+
+\textbf{u } := Fractional field uplift; for example, 10\% means \(u=0.10\)
+
+A \textbf{user object} is the combination of a CDF plus associated blob(s) (typically a user file)
+
+A \textbf{cluster object} is a single CDF or blob fragment
+
+\textbf{Q}\textsubscript{\textbf{obj}} : = number of user objects in the system partition
+
+\textbf{S}\textsubscript{\textbf{cdf}} := Average CDF size, which can be considered a constant of 4 KiB for our purposes
+
+\textbf{S}\textsubscript{\textbf{blob}} := Average blob size (i.e. the size of the user object being ingested into the cluster)
+
+\par\endgroup
+
+\(C'_R\) denotes uplifted raw cost per GB; \(A_R\) denotes raw selling price per GB. \(T'=T(1+u)\) and \(T''=T'/(1-GM)\) are total uplifted cost and total selling price.
+
+\(N=\sum_i j_i\) counts physical nodes. \(U=j_0+j_1+2j_2\) is the
+occupied rack space in 1U units. \(C\) is the actual number of populated
+cubes, with \(N_c\) physical nodes and \(G_{A,c}\) available GB in cube \(c\).
+\(G'_U\) accounts for average blob and CDF sizes before object-count limits;
+\(G_{U,Actual}\) also accounts for those limits. Both count logical blob
+and CDF bytes once, excluding protection copies.
+
+\subsection{Notes}\label{notes-3}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  All costs and prices are in US\$.
+\item
+  \label{note:normalization}A physical Gen 4 or Gen 4\textsuperscript{\ensuremath{\prime}}
+  node occupies 1U; a physical Gen 5 node occupies 2U. Physical nodes are used
+  for disk counts and protection groups. Rack-space units \(U\) are used
+  for enclosure cost, so a 2U node is not counted twice when calculating raw capacity.
+\item
+  In earlier versions of the model we factored out the effect of CDF storage and object size to simplify the model. However, we subsequently decided that this simplification masked too much detail. As of v0.50 of the model, we have added consideration for these two factors.
+\item
+  Cost of minor elements, e.g. cables, are factored into component cost of switches, nodes and rack(s).
+\item
+  We assume new installs.
+\item
+  We do not consider the effect of single instance store (SIS).
+\item
+  CDFs are written in a 1+\emph{n} protection scheme; i.e. we have 1+\emph{n} copies of each CDF.
+\item
+  Capacity units must be consistent throughout a calculation. A GB is
+  \(10^9\) bytes and a TB is \(10^{12}\) bytes; a GiB is \(2^{30}\) bytes
+  and a TiB is \(2^{40}\) bytes, following the IEC notation in
+  \hyperref[ref:2]{[2]}. Thus 500 GB is approximately 465.66 GiB.
+  The numerical value is 6.87\% lower when expressed in GiB; the physical
+  capacity is unchanged. Convert blob and CDF sizes into the same units as
+  capacity before applying the object-count equations; for example,
+  4 KiB is \(4096/10^9\) GB. The presentation in \hyperref[ref:8]{[8]}
+  uses decimal units for comparison with advertised disk capacities.
+\end{enumerate}

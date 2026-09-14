@@ -1,0 +1,12 @@
+% Shared editable diagram styles. Coordinates in the figures are schematic.
+\definecolor{capacityblue}{RGB}{26,61,112}
+\definecolor{capacitygreen}{RGB}{0,115,96}
+\definecolor{capacityred}{RGB}{175,58,50}
+\tikzset{
+  capacity axis/.style={draw=capacityblue,line width=.7pt},
+  capacity line/.style={draw=black,line width=.65pt},
+  capacity gap/.style={<->,>=Stealth,line width=.5pt},
+  capacity text/.style={font=\sffamily\small},
+  cost box/.style={draw=capacityblue,rounded corners=2pt,align=center,
+    font=\sffamily\small,minimum width=3.2cm,minimum height=1cm}
+}

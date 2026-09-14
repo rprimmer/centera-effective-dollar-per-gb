@@ -1,0 +1,353 @@
+\section{Equations}\label{equations-1}
+
+\subsubsection*{Solution Total Raw Capacity (GB)}
+
+
+\nopagebreak
+\begin{equation}\label{eq:1}
+G_R(N,j)=\sum_{i=0}^{2}j_iD_i\lvert N_i\rvert
+\end{equation}
+
+
+Raw capacity is a function of the number and type of nodes in the cluster. We generalize this by taking the cardinality (\# of elements) of the node type to determine the appropriate number of HDD; cf. Note 2 (p. \pageref{note:normalization}).
+
+
+The graph below illustrates this conceptually, where the area under G\textsubscript{R} represents \textbf{raw} capacity.
+
+\begin{center}
+\resizebox{.65\linewidth}{!}{\input{fig/raw-capacity}}
+\end{center}
+
+
+\subsubsection*{Solution Total Material Cost (\$)}
+
+
+\nopagebreak
+\begin{equation}\label{eq:2}
+\begin{aligned}T&=R\left\lceil U/32\right\rceil+WC+\sum_{i=0}^{2}j_i c_i\\ &\text{where }c_i\text{ is the cost of a physical node of type }i\end{aligned}
+\end{equation}
+
+
+Total material cost includes racks, switches (plus PDP and PDU) and nodes. Each rack provides 32U of modeled node space; each populated cube requires a redundant switch set (W). For tightly packed configurations with 16U per cube, \(C=\lceil U/16\rceil\). Use the actual cube count for partially populated deployments. The rack term assumes tightly packed racks; substitute the actual rack count when it differs.
+
+\subsubsection*{Material Cost of Raw Capacity (\$:GB)}
+
+
+\nopagebreak
+\begin{equation}\label{eq:3}
+C_R=\frac{T}{G_R}
+\end{equation}
+ 
+
+\subsubsection*{Total Material Cost with Field Uplift (\$)}
+
+
+\nopagebreak
+\begin{equation}\label{eq:4}
+T'=T(1+u)
+\end{equation}
+
+
+EMC has two types of uplift, which we indicate in Figure~\ref{fig:cost} (p. \pageref{fig:cost}) for completeness. However, only \emph{standard cost} is germane to our calculations, which results in an identical fixed percentage uplift for both Centera and CLARiiON.
+
+\subsubsection*{Material Cost of Raw Capacity with Field Uplift Applied (\$:GB)}
+
+
+\nopagebreak
+\begin{equation}\label{eq:5}
+C'_R=\frac{T'}{G_R}
+\end{equation}
+ 
+
+\subsubsection*{ASP with GM Applied (\$)}
+
+
+\nopagebreak
+\begin{equation}\label{eq:6}
+T''=\frac{T'}{1-GM}
+\end{equation}
+
+
+Gross Margin goals vary by product. In \hyperref[ref:8]{[8]} we illustrate the effect of varying the GM.
+
+\subsubsection*{Selling Price per GB of Raw Capacity (\$:GB)}
+
+
+\nopagebreak
+\begin{equation}\label{eq:7}
+A_R=\frac{T''}{G_R}
+\end{equation}
+ 
+
+\subsubsection*{Total Fixed Overhead (GB)}
+
+\textbf{Regen Buffer}:
+
+The characteristics of the regen buffer are enumerated below.
+
+\begin{itemize}
+\tightlist
+\item
+  There is one regen buffer allocated for each Cube on the cluster.
+\item
+  The Sysop reserves the regeneration buffer via the CLI command: set capacity regeneration buffer. The Sysop selects what type of protection is desired by inputting the number of HDD to protect. To affect node-level protection, the Sysop would enter 4 HDD for a Gen4 (S1) node and 6 HDD for a Gen5 (S2) node.
+\item
+  The size of the regen buffer is determined based on a cluster scope. That is, there are not different sized regen buffers per Cube in the cluster. Conceptually, if you had a cluster occupying 128U with 126 nodes of S1 and 1 node of S2, to provide node-level protection would require that the Sysop set the number of HDD to 6. This value would then be used for all 8 Cubes in our hypothetical cluster.
+\item
+  Nodes in a cluster are intended to use the regen buffer within their Cube. However, they will use the regen buffer of a different Cube (HRG), if necessary.
+\item
+  The total regen buffer allocation for the cluster is the sum of the individual regen buffers per Cube/HRG.
+\end{itemize}
+
+Let \(D_{\max}=\max_{i:j_i>0}D_i\) be the largest installed disk
+capacity, and let \(h_c\) be the number of disks reserved for regeneration in
+cube \(c\). The reservation and mirror-group factor \(MG\) are configuration
+inputs, with \(MG\in\{1,2\}\).
+\begin{equation}\label{eq:8}
+H_0=\sum_{c=1}^{C}R_{buf,c},\qquad R_{buf,c}=h_cD_{\max}MG
+\end{equation}
+For a cluster-wide setting, \(h_c=h\) for every cube. At \(MG=2\),
+a four-disk reservation on 500 GB disks is 4000 GB per cube; a six-disk
+reservation is 6000 GB per cube. The model uses the configured reservation
+rather than selecting a disk or node type by testing whether its nominal
+capacity is zero.\footnote{The original document attributes the factor of
+2 to the first release's dual power rails and cites \hyperref[ref:5]{[5]}.
+It describes reducing that factor to 1 as a goal for Hapkin.}
+
+The historical description gives both a uniform cluster-wide setting and
+a different rule for cubes below eight nodes. Those operational rules are
+not mutually resolved by the source. The appropriate \(h_c\) and \(MG\)
+must therefore be confirmed for the release and configuration being modeled.
+
+\textbf{Database Overhead} /\textbf{Audit} and Metadata Overhead:
+
+
+\nopagebreak
+\begin{equation}\label{eq:9}
+H_1=k_1N,\qquad H_3=k_3N
+\end{equation}
+
+
+\textbf{System Resources}:
+
+
+\nopagebreak
+\begin{equation}\label{eq:10}
+H_2=k_2\sum_{i=0}^{2}j_i\lvert N_i\rvert
+\end{equation}
+
+
+Here \(k_1\) and \(k_3\) are release-specific reservations in GB per physical node, and \(k_2\) is the system-resources reservation in GB per HDD. They are distinct constants.
+
+\subsubsection*{Effective Total Available Capacity (GB)}
+
+
+\nopagebreak
+\begin{equation}\label{eq:11}
+G_A=G_R-\sum_{i=0}^{3}H_i
+\end{equation}
+
+
+We treat database overhead as a fixed constant by release. Therefore, available capacity for user data storage is simply raw capacity minus this overhead. The total fixed overhead is \(\sum_i H_i\). Only configurations with nonnegative available capacity are feasible.
+
+
+The graph below illustrates this conceptually, where the area under G\textsubscript{A} represents effective \textbf{available} capacity.
+
+\begin{center}
+\resizebox{.65\linewidth}{!}{\input{fig/available-capacity}}
+\end{center}
+
+
+\subsubsection*{Effective Usable Capacity: Single Protection Scheme (GB)}
+
+
+\nopagebreak
+\begin{equation}\label{eq:12}
+G_U=G_A\frac{m}{m+n}
+\end{equation}
+ 
+
+Equation~\eqref{eq:12} provides usable capacity when a single protection scheme (P, where \emph{P = m/(m+n)}) is employed cluster-wide. It does not take into account object limits or the different protection applied to CDFs. It is exact when all logical bytes use the same protection ratio, and an approximation when CDFs are small relative to blobs.
+
+
+The graph below illustrates this conceptually, where the area under G\textsubscript{U} represents effective \textbf{usable} capacity.
+
+\begin{center}
+\resizebox{.65\linewidth}{!}{\input{fig/usable-capacity}}
+\end{center}
+
+
+Usable capacity is principally a measure of storage efficiency vis-à-vis raw capacity. We consider three elements as material with respect to storage efficiency:
+
+\begin{itemize}
+\tightlist
+\item
+  Data protection scheme P,
+\item
+  Overhead \{H\}, and
+\item
+  The limiting effect of a fixed cluster object count/HDD.
+\end{itemize}
+
+With Centera, customers can choose one of two \textbf{data protection schemes}: mirroring (P\textsubscript{cpm}) or parity (P\textsubscript{cpp}). For P\textsubscript{cpm}, \emph{m} = 1 and \emph{n} = 1; for P\textsubscript{cpp}, \emph{m} = 6 and \emph{n} = 1. Regardless of which data protection scheme is chosen, CDFs are always stored as P\textsubscript{cpm}. We generalize the equations to handle any \emph{m+n} protection scheme.
+
+\textbf{Overhead} for Centera consists of the four elements described in §\ref{notation-1} for \{H\}. We treat \emph{database overhead }as a constant since DB overhead is fixed by filesystem volume reservation. That space is thus unavailable for customer data irrespective of the actual size of the database\footnote{ Note that while this space is a constant for a given release of C*, this amount of space reserved for the C* databases historically has increased with each major revision. For our calculations we will use the expected reservation amount for Grimbergen.}.
+
+We are likewise able to treat the combination of C* (FilePool) and Platform (Linux+Filesystem) overhead as a constant by release. Here too we will use the expected values for Grimbergen and will adjust as necessary for Hapkin.
+
+The maximum number of cluster objects per HDD acts as a limit \emph{L}. For Hapkin the anticipated max fragment count per HDD is 25M. While this is a consideration for Grimbergen and its ancestors\footnote{ Cf. \hyperref[ref:4]{[4]} for an illustration of the limiting effect of object (fragment) count on storage in Faro.}, it is not anticipated to be an issue in Hapkin due to the introduction of Containers.
+
+\subsubsection*{Max Potential Usable Capacity: Combined Protection Schemes (GB)}
+
+Choosing the CPP protection scheme complicates the equation because we cannot be guaranteed that \emph{all} objects will in fact be stored with CPP. As a result of this asymmetry we cannot treat \emph{P} as a single value because it is possible that there will be two data protection schemes employed within the same cube.
+
+\emph{P} takes on a single, constant value when using CPM across the \emph{entire} cube (therefore, P = P\textsubscript{cpm}), or -- when using CPP\footnote{ Readers are directed to \hyperref[ref:1]{[1]} for detail about CPP in Grimbergen and Hapkin.} -- if the number of \emph{available} nodes is a multiple of 8 per HRG (heuristic reliability group), in which case P = P\textsubscript{cpp}.
+
+A more complex equation comes in to play when CPP is the \emph{desired} protection scheme, but it cannot actually be employed by FilePool because the number of \emph{available} nodes is not a multiple of 8. Equation~\eqref{eq:13} provides effective usable capacity in such a case (without taking into account the effect of object limit).
+
+The usable capacity across the entire cluster (G\textsubscript{U,Cluster}) is the sum of the usable capacity for the individual Cubes that make up the cluster (G\textsubscript{U,Cube}).
+
+
+\nopagebreak
+\begin{equation}\label{eq:13}
+\begin{aligned}
+f_{c,cpp}&=\frac{8\lfloor N_c/8\rfloor}{N_c},\qquad f_{c,cpm}=1-f_{c,cpp},\\
+G_U&=\sum_{c=1}^{C}G_{A,c}\bigl(f_{c,cpp}P_{cpp}+f_{c,cpm}P_{cpm}\bigr).
+\end{aligned}
+\end{equation}
+ 
+
+For populated cubes, \(N_c>0\). The fractions in \eqref{eq:13} assume equal available capacity per physical node within each cube. For unequal nodes, use capacity fractions calculated from the actual allocation instead. When CPM alone is selected, set \(f_{c,cpp}=0\) and \(f_{c,cpm}=1\). In \eqref{eq:13}, for each Cube we apportion available storage capacity over the two protection schemes (P\textsubscript{cpp} and P\textsubscript{cpm}). We then sum the usable capacity of the Cubes within a single logical cluster to get usable capacity cluster wide. Of course, \eqref{eq:13} is just a generalized form of \eqref{eq:12}. Finally, the reader should note that equation~\eqref{eq:13} is an optimization algorithm that biases to P\textsubscript{cpp}. In practice, C* will tend to be less efficient as C* doesn't operate in the idealized environment of a model (this is discussed in greater detail in §\ref{multiple-protection-schemes-3}, p. \pageref{multiple-protection-schemes-3}).
+
+The graph below illustrates the case where an 8 node cluster was subsequently upgraded to 12 nodes. The first 8 nodes will have CPP protection overhead (P\textsubscript{cpp}), while the 4 nodes added subsequent to the 8 nodes (which presumably are nearly full, leading to the additional nodes being added to the cluster) will have CPM protection overhead (P\textsubscript{cpm}). The area under G\textsubscript{U} represents usable capacity.
+
+
+\begin{center}
+\resizebox{.65\linewidth}{!}{\input{fig/combined-protection}}
+\end{center}
+Our expectation is that with the introduction of Containers in Hapkin the limiting effect of object count is removed (L = \(\infty\)). We show that model first (M\textsubscript{2} in the conceptual descriptions provided on p. \pageref{models-1}). Later we add the effect of object limitation into the model to illustrate the result if object count remains a limiting factor.
+
+\subsubsection*{Usable Capacity with Effects of Object \& Capacity Limits}
+
+The next level of detail to consider is the two limitations in our system. The first is the number of cluster objects per HDD, which is limited to \emph{L}. This limitation is required to impose a lower bound on MTTDL (Mean Time to Data Loss) as it impacts regeneration speed. The second limitation is the total amount of available capacity G\textsubscript{A}. We'll describe each of these limitations in turn, but we begin by describing a single \textbf{user} object write in terms of number of \textbf{cluster} objects and capacity usage.
+
+For a homogeneous protection partition, writing a single user object results in \(m+n\) blob fragments and \(1+n\) CDF copies. For the CPM and CPP schemes considered here, \(n=1\), so the CDF is mirrored in both cases. This means that in total, a single user object will result in \emph{m+n+}1+\emph{n }= \emph{m }+ 2\emph{n} +1 cluster objects.
+
+The inequality below specifies the effect of cluster object limit.
+
+
+\nopagebreak
+\begin{equation}\label{eq:14}
+\begin{aligned}(m+2n+1)\cdot Q_{obj,L}&\leq L\cdot Z\\ &\text{where }L=\text{a release dependent constant}\\ &\text{and }Z=\sum_{i=0}^{2}j_i\lvert N_i\rvert\end{aligned}
+\end{equation}
+ 
+
+The object-budget upper bound on the number of user objects in a homogeneous partition is:
+
+
+\nopagebreak
+\begin{equation}\label{eq:15}
+Q_{obj,L}=\frac{L\cdot Z}{m+2n+1}
+\end{equation}
+
+
+Writing a single user object results in \(\frac{m+n}{m}S_{blob}+(1+n)S_{cdf}\) capacity usage.
+
+The limitation due to available capacity is:
+
+
+\nopagebreak
+\begin{equation}\label{eq:16}
+\left(\frac{m+n}{m}S_{blob}+(1+n)S_{cdf}\right)\cdot Q_{obj,cap}\leq G_A
+\end{equation}
+
+
+The capacity upper bound on the number of objects in a homogeneous partition is:
+
+
+\nopagebreak
+\begin{equation}\label{eq:17}
+Q_{obj,cap}=\frac{G_A}{\frac{m+n}{m}S_{blob}+(1+n)S_{cdf}}
+\end{equation}
+
+
+As in \eqref{eq:13}, we must account for the fact that there may be differing protection schemes across the cluster. Define \(b_s\) as physical capacity consumed per logical user object under scheme \(s\). The cluster-wide capacity upper bound is:
+
+
+\nopagebreak
+\begin{equation}\label{eq:18}
+\begin{aligned}
+b_s&=\frac{m_s+n_s}{m_s}S_{blob}+(1+n_s)S_{cdf},\\
+q_{cap,c,s}&=\frac{G_{A,c}f_{c,s}}{b_s},\qquad
+Q_{obj,cap}=\sum_{c=1}^{C}\sum_{s\in\{cpp,cpm\}}q_{cap,c,s}.
+\end{aligned}
+\end{equation}
+ 
+
+Here \((m_{cpp},n_{cpp})=(6,1)\) and \((m_{cpm},n_{cpm})=(1,1)\). Object sizes must use the same capacity units as \(G_{A,c}\); object counts are continuous upper bounds and should be rounded down within each partition when discrete counts are needed. In \eqref{eq:13} we determine the max potential usable capacity. In \eqref{eq:18} we get more granular by determining what the actual maximum usable capacity is for the specific average blob size (S\textsubscript{blob}).
+
+\begin{quote}
+
+\nopagebreak
+\begin{equation}\label{eq:19}
+G'_U=Q_{obj,cap}\times\left(S_{blob}+S_{cdf}\right)
+\end{equation}
+ 
+\end{quote}
+
+As \(S_{cdf}/S_{blob}\) tends to zero, \(G'_U\) approaches the
+protection-only capacity \(G_U\); equality is not guaranteed for finite CDF
+sizes. Large blobs also avoid the small-object CPP threshold, although the
+placement constraints in §\ref{multiple-protection-schemes-3} still apply.
+
+\subsubsection*{Effect of Object Limit}
+
+For a homogeneous partition, the number of stored user objects is bounded
+by \(\min(Q_{obj,cap},Q_{obj,L})\). For mixed protection, limits must be
+applied within each partition before summing; a cluster-wide minimum can
+hide a local object-budget bottleneck.
+
+Let \(Z_{c,s}\) be the HDD-equivalent object budget allocated to partition
+\((c,s)\), with \(\sum_s Z_{c,s}\leq Z_c\), where \(Z_c\) is the number of
+HDDs in cube \(c\). Define
+\[
+q_{L,c,s}=\frac{L Z_{c,s}}{m_s+2n_s+1}.
+\]
+The allocation is a model input. It assumes fragments can be balanced
+within the allocated budget; the aggregate bound alone does not guarantee
+feasible placement on every physical disk. The reduction in logical usable
+capacity attributable to object limits is
+\begin{equation}\label{eq:20}
+G_{unused}=\sum_{c,s}\max(0,q_{cap,c,s}-q_{L,c,s})(S_{blob}+S_{cdf}).
+\end{equation}
+Here \(G_{unused}\) denotes lost logical capacity, not unoccupied raw disk
+space. Actual logical usable capacity is therefore
+\begin{equation}\label{eq:21}
+\begin{aligned}
+G_{U,Actual}&=G'_U-G_{unused}\\
+&=\sum_{c,s}\min(q_{cap,c,s},q_{L,c,s})(S_{blob}+S_{cdf}).
+\end{aligned}
+\end{equation}
+With no object bottleneck, \(G_{U,Actual}=G'_U\). If a partition's object
+limit binds, only that partition's usable capacity is reduced. The same
+formulas apply to a single protection scheme by using one partition.
+
+The graph below conceptually illustrates the effect that object limitation has with respect to the two protection schemes. The curves L\textsubscript{cpp} and L\textsubscript{cpm} give achievable usable capacity at each object size. Each scheme has its own capacity-only plateau. The axes are schematic: no measured object-size thresholds or release-specific capacities are implied.
+
+
+\begin{center}
+\resizebox{.56\linewidth}{!}{\input{fig/object-limit}}
+\end{center}
+
+
+\subsubsection*{Cost and ASP per Actually Usable GB}
+
+The cost-over-capacity construction used in equations~\eqref{eq:3},
+\eqref{eq:5} and \eqref{eq:7} gives uplifted cost and selling price per
+actually usable GB:
+\begin{align}
+C_U&=\frac{T'}{G_{U,Actual}},\label{eq:22}\\
+A&=\frac{C_U}{1-GM}.\label{eq:23}
+\end{align}
+These ratios require \(G_{U,Actual}>0\) and \(0\leq GM<1\).
+The gross-margin target is specific to the product line.

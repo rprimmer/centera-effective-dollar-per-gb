@@ -1,0 +1,8 @@
+% Editable TikZ source; schematic marginal capacity, not measured data.
+\begin{tikzpicture}[x=1cm,y=1cm,capacity text]
+\path[use as bounding box] (-.85,-.65) rectangle (8.2,5.5);
+\draw[capacity axis] (0,5.2) -- (0,0) -- (7.2,0);
+\node[rotate=90,text=capacityblue] at (-.6,2.6) {Marginal capacity (GB)};
+\node[anchor=north east,text=capacityblue] at (7.2,-.16) {Nodes ($N$)};
+\draw[capacity line] (0,5) -- (7.2,5) node[right] {$G_R$};
+\end{tikzpicture}

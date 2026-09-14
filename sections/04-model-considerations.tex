@@ -1,0 +1,45 @@
+\section{Model Considerations}\label{model-considerations-1}
+
+Axiom \#1: With C*, things are seldom black or white.
+
+In our model we make a number of simplifying assumptions to keep the model from becoming unreadable due to all the conditional branching that would be required if we chose an exact match to C* behavior. In this section, we describe some of those differences to ease the mind of the purist.
+
+\subsection{Multiple Protection Schemes}\label{multiple-protection-schemes-3}
+
+As stated previously, the algorithm depicted in equation~\eqref{eq:13} is an optimization that biases to CPP. In practice, one cannot predict a priori in all cases whether C* will actually store an object with CPP protection. Rather, this determination is made by C* on a per-write basis. This is especially true when capacity, as a unit measure of node type, is asymmetric. Specifically, when a cluster has a combination of N\textsubscript{1} and N\textsubscript{2} nodes, there's an intrinsic imbalance in capacity:node. Since the CPP protection scheme has a node scope (as opposed to a disk scope), this asymmetry will result in some objects written in CPM -- even if CPP is the Sysop selected protection scheme.
+
+To give the reader a sense of the number of conditionals involved when deciding when to write via CPP versus CPM, we provide pseudo-code below (biasing to CPP). Of course, the pseudo-code is a simplification of the actual algorithm.
+
+\begin{lstlisting}
+CPP_THRESHOLD = 100000  // bytes; historical model input
+CPP = {data: 6, parity: 1, min_nodes: 8}
+CPM = {data: 1, parity: 1, min_nodes: 2}
+
+function WriteObject(object):
+    for scheme in [CPP, CPM]:
+        if CheckWrite(scheme, object):
+            return write_blob_and_mirrored_cdf(scheme, object)
+    return failure
+
+function CheckWrite(scheme, object):
+    if scheme == CPP and size(object) < CPP_THRESHOLD:
+        return false
+    if nodes_available < scheme.min_nodes:
+        return false
+    fragment_size = ceil(size(object) / scheme.data)
+    return can_place_fragments_and_mirrored_cdf(
+        scheme, object, fragment_size)
+\end{lstlisting}
+
+The placement predicate includes per-node free capacity, object slots,
+and protection-group constraints for both the blob and its CDF. These
+release-dependent checks must be supplied by the implementation; aggregate
+free capacity is insufficient. The CPP size threshold applies only to CPP,
+so a small object may fall back to CPM. The eight-node CPP eligibility rule
+is the assumption used in the preceding model, rather than the count of
+seven fragments.
+
+
+\subsection{Database Overhead}\label{database-overhead-3}
+
+We only consider ``hard overhead'' in our model; i.e., the overhead reservations that come with a given C* release. We do not consider ``soft overhead.'' Readers interested in gaining a greater understanding of this are directed to \hyperref[ref:3]{[3]}.

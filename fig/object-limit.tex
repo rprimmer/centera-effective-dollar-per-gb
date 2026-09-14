@@ -1,0 +1,19 @@
+% Editable schematic: two protection schemes have different capacity plateaus.
+% No calibrated KB scale or release-specific object-limit measurement is implied.
+% Change the kink coordinates and plateaus to illustrate another configuration.
+\begin{tikzpicture}[x=1cm,y=1cm,capacity text]
+\path[use as bounding box] (-.85,-.8) rectangle (8.2,5.5);
+\draw[capacity axis] (0,5.25) -- (0,0) -- (7.2,0);
+\node[rotate=90,text=capacityblue] at (-.6,2.7) {Usable capacity};
+\node[anchor=north,text=capacityblue] at (3.6,-.2) {Average user-object size (schematic)};
+\draw[capacityblue,dashed] (0,4.3) -- (7.2,4.3);
+\draw[capacityred,dashed] (0,2.5) -- (7.2,2.5);
+\draw[capacityblue,line width=1pt] (0,0) -- (3.5,4.3) -- (7.2,4.3);
+\draw[capacityred,line width=1pt] (0,0) -- (4.5,2.5) -- (7.2,2.5);
+\node[anchor=south east,text=capacityblue] at (7.2,4.35) {CPP: $L_{cpp}$};
+\node[anchor=south east,text=capacityred] at (7.2,2.55) {CPM: $L_{cpm}$};
+\node[align=center,fill=white,inner sep=3pt] at (1.15,3.65) {Object-count\\limited};
+\node[align=center] at (5.9,1.2) {Capacity limited\\at each plateau};
+\node[anchor=north west,font=\sffamily\scriptsize] at (0,-.55)
+  {Solid lines: actual usable capacity; dashed lines: capacity-only limits.};
+\end{tikzpicture}

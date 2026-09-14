@@ -1,0 +1,15 @@
+% Editable cost-category hierarchy, preserving the historical relationships.
+\begin{tikzpicture}[x=1cm,y=1cm,capacity text]
+\node[cost box,minimum width=2cm] (material) at (0,0) {Material\\cost};
+\node[cost box] (software) at (4,3) {Software\\\textcolor{capacityblue}{Standard cost}};
+\node[cost box] (hardware) at (4,1.35) {Hardware\\\textcolor{capacityblue}{Standard cost}};
+\node[cost box] (product) at (4,-1.35) {Hardware\\\textcolor{capacitygreen}{Product cost}};
+\node[cost box] (list) at (4,-3) {List price};
+\foreach \target in {software,hardware,product,list}
+  \draw[capacity axis] (material.east) -- ++(.35,0) |- (\target.west);
+\draw[capacityred,dashed] (1.4,0) -- (8.4,0);
+\draw[decorate,decoration={brace,amplitude=7pt},capacity axis]
+  (5.9,3.6) -- (5.9,.75) node[midway,right=12pt,align=center] {Standard\\margin};
+\draw[decorate,decoration={brace,amplitude=7pt},capacity axis]
+  (5.9,-.75) -- (5.9,-3.6) node[midway,right=12pt,align=center] {Field\\margin};
+\end{tikzpicture}

@@ -1,0 +1,46 @@
+\documentclass[11pt,letterpaper]{article}
+
+\input{preamble}
+\input{macros}
+\input{metadata}
+
+\begin{document}
+\begin{titlepage}
+\centering
+\vspace*{1.2in}
+{\LARGE\bfseries\PaperTitle\par}
+\vspace{0.3in}
+{\Large\PaperSubtitle\par}
+\vspace{0.65in}
+Document Version: \PaperVersion\par
+\vspace{0.25in}
+\PaperAuthors\par
+\vspace{0.2in}
+Centera Division\par
+\textsuperscript{\textdagger} Hopkinton, MA USA\par
+\textsuperscript{\textdaggerdbl} Mechelen, Belgium\par
+\vspace{0.4in}
+\PaperDate\par
+\vfill
+\begin{minipage}{0.9\textwidth}
+\input{sections/00-abstract}
+\end{minipage}
+\vspace*{0.5in}
+\end{titlepage}
+\pagenumbering{roman}
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+\input{sections/01-models}
+\clearpage
+\input{sections/02-notation}
+\clearpage
+\input{sections/03-equations}
+\clearpage
+\input{sections/04-model-considerations}
+\clearpage
+\input{sections/05-emc-cost-categorization}
+\clearpage
+\input{sections/06-references}
+\input{sections/07-acknowledgements}
+\end{document}

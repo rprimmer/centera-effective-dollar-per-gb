@@ -1,0 +1,37 @@
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=1in,headheight=14pt]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,decorations.pathreplacing}
+\input{fig/styles}
+\usepackage{microtype}
+\usepackage{parskip}
+\usepackage{array,longtable,booktabs,calc}
+\usepackage{caption}
+\usepackage{listings}
+\usepackage{enumitem}
+\usepackage{needspace}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+\usepackage{bookmark}
+\usepackage{xurl}
+\urlstyle{same}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+\setlength{\emergencystretch}{2em}
+\setlist{itemsep=3pt,topsep=6pt}
+\lstset{basicstyle=\footnotesize\ttfamily,columns=fullflexible,keepspaces=true,breaklines=true,showstringspaces=false}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[L]{\footnotesize EMC\textsuperscript{2}}
+\fancyfoot[R]{\footnotesize\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\hypersetup{pdftitle={Storage Cost: A Formal Model for Effective \$/GB and Storage Efficiency for Centera},pdfauthor={Robert Primmer, Jiri Schindler, Jim Espy, Carl D'Halluin}}
+
+% Keep short paragraph fragments with their neighboring text.
+\clubpenalty=10000
+\widowpenalty=10000

@@ -1,0 +1,27 @@
+\section{Models}\label{models-1}
+
+The goal is to forecast effective cost per GB for Safari 2/Hapkin Centera
+configurations. The models below successively account for fixed overhead,
+data protection, field uplift, gross margin, and object-count limits.
+Each \(M_i\) is a cost or price per GB, not a capacity.
+
+\begin{description}
+\item[\(M_0\)] Raw material cost per GB: \(M_0=T/G_R\).
+\item[\(M_1\)] Material cost per available GB after fixed overhead:
+\(M_1=T/G_A\), where \(G_A=G_R-\sum_{i=0}^{3}H_i\).
+\item[\(M_2\)] Material cost per potentially usable GB after data protection:
+\(M_2=T/G_U\). For a single protection scheme, \(G_U=P G_A\), so
+\(M_2=M_1/P\). Mixed schemes are treated by cube in equation~\eqref{eq:13}.
+\item[\(M_3\)] Cost per potentially usable GB including field uplift:
+\(M_3=M_2(1+u)\), where \(u\) is a fractional uplift.
+\item[\(M_4\)] Selling price per potentially usable GB at gross margin \(GM\):
+\(M_4=M_3/(1-GM)\).
+\item[\(M_5\)] Selling price per actually usable GB, accounting for average
+blob and CDF sizes and object-count limits:
+\(M_5=T(1+u)/[(1-GM)G_{U,Actual}]\).
+The corresponding cost per GB before gross margin is
+\(T(1+u)/G_{U,Actual}\).
+\end{description}
+
+These ratios require positive capacity and \(0\leq GM<1\).
+When no user data can be stored, cost per usable GB is undefined.
