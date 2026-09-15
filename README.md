@@ -4,15 +4,23 @@ Revised LaTeX edition of *Storage Cost: A Formal Model for Effective $/GB and
 Storage Efficiency for Centera*, version 1.00, October 25, 2005, by Robert
 Primmer, Jiri Schindler, Jim Espy, and Carl D'Halluin.
 
+## Read the paper
+
+[**Read or download the final PDF**](centera-egb.pdf). No build tools are required.
+
+The top-level PDF is tracked in Git. Running `make` refreshes it from the
+compiled copy in `build/`; commit both source changes and the refreshed PDF.
+Cleanup commands retain the top-level PDF.
+
 ## Build
 
 Install a TeX distribution with pdfLaTeX, latexmk, and the packages listed in
 [preamble.tex](preamble.tex), then run from this directory:
 
 ```sh
-make                 # build/centera-egb.pdf
+make                 # build and refresh centera-egb.pdf
 make clean           # remove intermediates, retain the PDF
-make distclean       # remove intermediates and the generated PDF
+make distclean       # remove build outputs; retain top-level PDF
 make overleaf        # dist/centera-egb-overleaf.zip
 ```
 
@@ -22,7 +30,7 @@ build does no typesetting work. No office suite, Pandoc, Ghostscript, Python,
 or files from `attic/` are needed to build the converted paper.
 
 Use [centera-egb.tex](centera-egb.tex) as the editor root document, with this
-project directory as the working directory. The PDF is generated in `build/`.
+project directory as the working directory. The PDF is compiled in `build/` and copied to the top level by `make`.
 
 ## Layout
 

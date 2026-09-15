@@ -7,6 +7,7 @@ all: pdf
 # latexmk discovers dependencies (including figures) and resolves references.
 pdf:
 	$(LATEXMK) centera-egb.tex
+	cp build/centera-egb.pdf centera-egb.pdf
 
 # Restrict cleanup to generated files in build/; retain the finished PDF.
 clean:
@@ -21,7 +22,7 @@ overleaf:
 	python3 scripts/package-overleaf.py
 
 help:
-	@echo 'make            Build build/centera-egb.pdf with pdfLaTeX'
+	@echo 'make            Build and refresh centera-egb.pdf with pdfLaTeX'
 	@echo 'make clean      Remove build intermediates; keep the PDF'
-	@echo 'make distclean  Remove build intermediates and the generated PDF'
+	@echo 'make distclean  Remove build outputs; keep the top-level PDF'
 	@echo 'make overleaf   Package editable sources in dist/centera-egb-overleaf.zip'
